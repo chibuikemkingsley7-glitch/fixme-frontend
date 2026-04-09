@@ -6,18 +6,21 @@
   <style>
     body {font-family:'Segoe UI', Tahoma, sans-serif; margin:0; padding:0; background:#f0f2f5;}
     header {background:#000; color:white; padding:15px; text-align:center; font-size:24px; font-weight:bold;}
-    .container {width:90%; max-width:400px; margin:20px auto;}
+    .container {width:90%; max-width:450px; margin:20px auto;}
     .card {background:white; padding:20px; margin:10px 0; border-radius:10px; box-shadow:0 3px 8px rgba(0,0,0,0.1);}
-    input {width:90%; padding:10px; margin:5px 0; border-radius:5px; border:1px solid #ccc;}
+    input, select {width:90%; padding:10px; margin:5px 0; border-radius:5px; border:1px solid #ccc;}
     button {padding:10px 15px; margin:5px 0; background:#000; color:white; border:none; border-radius:5px; cursor:pointer; width:95%; font-size:16px;}
     button:hover {background:#333;}
     h2,h3 {margin:5px 0;}
+    img {max-width:80px; margin:5px; border-radius:10px;}
+    .star {color:purple; font-size:20px;}
   </style>
 </head>
 <body>
 
 <header>FixMe 💈</header>
 
+<!-- Landing Page -->
 <div class="container" id="roleSelect">
   <div class="card">
     <h2>Welcome to FixMe</h2>
@@ -41,7 +44,7 @@
   </div>
 </div>
 
-<!-- Dashboard for Customer -->
+<!-- Customer Dashboard -->
 <div class="container" id="dashboard" style="display:none;">
   <div class="card">
     <h2>Choose Service</h2>
@@ -50,12 +53,9 @@
   </div>
 </div>
 
-<!-- Experience level selection -->
-<div class="container" id="experienceSection" style="display:none;">
-  <div class="card">
-    <h2>Choose Experience Level</h2>
-    <div id="experienceOptions"></div>
-  </div>
+<!-- Customer sees verified agents -->
+<div class="container" id="workersSection" style="display:none;">
+  <div id="workers"></div>
 </div>
 
 <!-- Booking Confirmation -->
@@ -66,29 +66,47 @@
   </div>
 </div>
 
+<!-- Agent Registration -->
+<div class="container" id="agentSection" style="display:none;">
+  <div class="card">
+    <h3>Register as Agent</h3>
+    <input id="agentName" placeholder="Full Name"><br>
+    <input id="agentEmail" placeholder="Email"><br>
+    <input id="agentPassword" type="password" placeholder="Password"><br>
+    <input id="agentAddress" placeholder="Address"><br>
+    <select id="serviceType">
+      <option value="">Select Service</option>
+      <option value="Hairdresser">Hairdresser</option>
+      <option value="Barber">Barber</option>
+    </select><br>
+    <input id="experienceYears" type="number" placeholder="Experience in years"><br>
+    <input type="file" id="profilePic" accept="image/*"><br>
+    <input type="file" id="kitPic" accept="image/*"><br>
+    <label>Want Purple Star? (Monthly Payment)</label>
+    <input type="checkbox" id="purpleStar"><br>
+    <button onclick="registerAgent()">Submit for Verification</button>
+  </div>
+</div>
+
 <script>
 const API = "https://fixme-backend-1.onrender.com";
 let selectedService = "";
 
-// Role selection
+// Landing role selection
 function selectRole(role){
-  document.getElementById("roleSelect").style.display = "none";
+  document.getElementById("roleSelect").style.display="none";
   if(role==='customer'){
-    document.getElementById("authSection").style.display = "block";
+    document.getElementById("authSection").style.display="block";
   } else {
-    alert("Agent registration page (not implemented yet)");
+    document.getElementById("agentSection").style.display="block";
   }
 }
 
-// Signup/Login
+// Customer signup/login
 function signup(){
-  fetch(API+"/signup",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({email:document.getElementById("email").value,password:document.getElementById("password").value})
-  })
-  .then(res=>res.json())
-  .then(data=>{
+  fetch(API+"/signup",{method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email:document.getElementById("email").value,password:document.getElementById("password").value})})
+  .then(res=>res.json()).then(data=>{
     alert(data.message);
     document.getElementById("authSection").style.display="none";
     document.getElementById("dashboard").style.display="block";
@@ -96,13 +114,9 @@ function signup(){
 }
 
 function login(){
-  fetch(API+"/login",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({email:document.getElementById("email").value,password:document.getElementById("password").value})
-  })
-  .then(res=>res.json())
-  .then(data=>{
+  fetch(API+"/login",{method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email:document.getElementById("email").value,password:document.getElementById("password").value})})
+  .then(res=>res.json()).then(data=>{
     alert(data.message);
     document.getElementById("authSection").style.display="none";
     document.getElementById("dashboard").style.display="block";
@@ -113,40 +127,70 @@ function login(){
 function chooseService(service){
   selectedService = service;
   document.getElementById("dashboard").style.display="none";
-  document.getElementById("experienceSection").style.display="block";
-  
-  const options = [
-    {exp:"1-3 years", price:4000, duration:"2 hours"},
-    {exp:"3-6 years", price:8000, duration:"2 hours"},
-    {exp:"6-10 years", price:15000, duration:"2 hours"},
-    {exp:"10+ years", price:25000, duration:"2 hours"}
-  ];
-  
-  let html="";
-  options.forEach((opt,i)=>{
-    html+=`<div class="card">
-      <h3>${opt.exp}</h3>
-      <p>₦${opt.price} for 1 person</p>
-      <p>Duration: ${opt.duration}</p>
-      <button onclick="book('${selectedService}','${opt.exp}',${opt.price},'${opt.duration}')">Book</button>
-    </div>`;
+  document.getElementById("workersSection").style.display="block";
+
+  fetch(API+"/agents?service="+service)
+  .then(res=>res.json()).then(data=>{
+    let html="";
+    data.forEach(agent=>{
+      if(agent.status==="verified"){
+        html+=`<div class="card">
+          <h3>${agent.name} ${agent.purpleStar?"<span class='star'>⭐</span>":""}</h3>
+          <p>Experience: ${agent.experience} years</p>
+          <p>Location: ${agent.address}</p>
+          <p>Price: ₦${agent.price} for 1 person</p>
+          <img src="${agent.profilePicUrl}" alt="Profile"><img src="${agent.kitPicUrl}" alt="Kit">
+          <button onclick="book('${agent.id}',${agent.price})">Book</button>
+        </div>`;
+      }
+    });
+    document.getElementById("workers").innerHTML = html;
   });
-  document.getElementById("experienceOptions").innerHTML=html;
 }
 
-// Book function
-function book(service,exp,price,duration){
-  fetch(API+"/book",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({service:service,exp:exp,price:price,duration:duration,location:"User location"})
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    document.getElementById("experienceSection").style.display="none";
+// Booking
+function book(agentId, price){
+  fetch(API+"/book",{method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({agentId:agentId,price:price,location:"User location"})})
+  .then(res=>res.json()).then(data=>{
+    document.getElementById("workersSection").style.display="none";
     document.getElementById("bookingBox").style.display="block";
     document.getElementById("bookingDetails").innerHTML=
-      `Service: ${service}<br>Experience: ${exp}<br>Price: ₦${price}<br>Duration: ${duration}`;
+      `Booking confirmed with Agent ID: ${agentId}<br>Price: ₦${price}`;
+  });
+}
+
+// Agent registration
+function registerAgent(){
+  const name=document.getElementById("agentName").value;
+  const email=document.getElementById("agentEmail").value;
+  const password=document.getElementById("agentPassword").value;
+  const address=document.getElementById("agentAddress").value;
+  const service=document.getElementById("serviceType").value;
+  const exp=document.getElementById("experienceYears").value;
+  const profile=document.getElementById("profilePic").files[0];
+  const kit=document.getElementById("kitPic").files[0];
+  const purpleStar=document.getElementById("purpleStar").checked;
+
+  if(!name||!email||!password||!address||!service||!exp||!profile||!kit){
+    alert("Fill all fields and upload images"); return;
+  }
+
+  const formData = new FormData();
+  formData.append("name",name);
+  formData.append("email",email);
+  formData.append("password",password);
+  formData.append("address",address);
+  formData.append("service",service);
+  formData.append("experience",exp);
+  formData.append("profilePic",profile);
+  formData.append("kitPic",kit);
+  formData.append("purpleStar",purpleStar);
+
+  fetch(API+"/registerAgent",{method:"POST",body:formData})
+  .then(res=>res.json()).then(data=>{
+    alert("Agent submitted! Status: Pending Verification");
+    document.getElementById("agentSection").style.display="none";
   });
 }
 </script>
