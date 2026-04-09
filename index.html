@@ -1,88 +1,101 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>FixMe</title>
+  <title>FixMe 💈</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
-      font-family: Arial;
-      background: #f4f4f4;
-      text-align: center;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin:0;
+      padding:0;
+      background:#f0f2f5;
     }
-    .box {
-      background: white;
-      padding: 20px;
-      margin: 20px auto;
-      width: 300px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    header {
+      background:#000;
+      color:white;
+      padding:15px;
+      text-align:center;
+      font-size:24px;
+      font-weight:bold;
+    }
+    .container {
+      width:90%;
+      max-width:400px;
+      margin:20px auto;
+    }
+    .card {
+      background:white;
+      padding:20px;
+      margin:10px 0;
+      border-radius:10px;
+      box-shadow:0 3px 8px rgba(0,0,0,0.1);
     }
     input {
-      width: 90%;
-      padding: 10px;
-      margin: 5px;
+      width:90%;
+      padding:10px;
+      margin:5px 0;
+      border-radius:5px;
+      border:1px solid #ccc;
     }
     button {
-      padding: 10px;
-      margin: 5px;
-      width: 95%;
-      background: black;
-      color: white;
-      border: none;
-      border-radius: 5px;
+      padding:10px 15px;
+      margin:5px 0;
+      background:#000;
+      color:white;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+      width:95%;
+      font-size:16px;
+    }
+    button:hover {
+      background:#333;
+    }
+    h2, h3 {
+      margin:5px 0;
     }
   </style>
 </head>
 
 <body>
 
-<h1>FixMe 💈</h1>
+<header>FixMe 💈</header>
 
-<div id="authSection">
+<div class="container" id="authSection">
 
-  <div class="box">
+  <div class="card">
     <h3>Create Account</h3>
     <input id="email" placeholder="Email"><br>
     <input id="password" type="password" placeholder="Password"><br>
     <button onclick="signup()">Sign Up</button>
   </div>
 
-  <div class="box">
+  <div class="card">
     <h3>Login</h3>
     <button onclick="login()">Login</button>
   </div>
 
 </div>
-<div id="dashboard" style="display:none;">
 
-  <div class="box">
-    <h2>Welcome to FixMe 🎉</h2>
+<div class="container" id="dashboard" style="display:none;">
+
+  <div class="card">
+    <h2>Welcome!</h2>
+    <p>Choose a service below</p>
   </div>
 
-  <div class="box">
-    <h3>Choose Service</h3>
+  <div class="card">
     <button onclick="getWorkers('Hairdresser')">Hairdresser</button>
     <button onclick="getWorkers('Barber')">Barber</button>
   </div>
 
-  <div class="box">
-    <h3>Available Workers</h3>
-    <div id="workers"></div>
-    <div class="box" id="bookingBox" style="display:none;">
-  <h3>Booking Confirmed ✅</h3>
-  <p id="bookingDetails"></p>
-</div>
+  <div id="workers"></div>
+
+  <div class="card" id="bookingBox" style="display:none;">
+    <h3>Booking Confirmed ✅</h3>
+    <p id="bookingDetails"></p>
   </div>
 
-</div>
-<div class="box">
-  <h3>Choose Service</h3>
-  <button onclick="getWorkers('Hairdresser')">Hairdresser</button>
-  <button onclick="getWorkers('Barber')">Barber</button>
-</div>
-
-<div class="box">
-  <h3>Available Workers</h3>
-  <div id="workers"></div>
 </div>
 
 <script>
@@ -100,10 +113,8 @@ function signup(){
   .then(res=>res.json())
   .then(data=>{
     alert(data.message);
-
-    // SWITCH SCREEN
-    document.getElementById("authSection").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("authSection").style.display="none";
+    document.getElementById("dashboard").style.display="block";
   });
 }
 
@@ -119,20 +130,23 @@ function login(){
   .then(res=>res.json())
   .then(data=>{
     alert(data.message);
-
-    // SWITCH SCREEN
-    document.getElementById("authSection").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("authSection").style.display="none";
+    document.getElementById("dashboard").style.display="block";
   });
 }
+
 function getWorkers(type){
   fetch(API+"/workers?type="+type)
   .then(res=>res.json())
   .then(data=>{
     let html="";
     data.forEach(w=>{
-      html+=`<p><b>${w.name}</b><br>${w.exp}<br>₦${w.price}
-      <br><button onclick="book(${w.id},${w.price})">Book</button></p>`;
+      html+=`<div class="card">
+        <h3>${w.name}</h3>
+        <p>${w.exp}</p>
+        <p>₦${w.price}</p>
+        <button onclick="book(${w.id},${w.price})">Book</button>
+      </div>`;
     });
     document.getElementById("workers").innerHTML=html;
   });
@@ -150,14 +164,9 @@ function book(id, price){
   })
   .then(res=>res.json())
   .then(data=>{
-    
-    // Show booking box
-    document.getElementById("bookingBox").style.display = "block";
-
-    // Show details
-    document.getElementById("bookingDetails").innerHTML =
-      "Your booking is confirmed.<br>Amount: ₦" + price;
-
+    document.getElementById("bookingBox").style.display="block";
+    document.getElementById("bookingDetails").innerHTML=
+      "Your booking is confirmed.<br>Amount: ₦"+price;
   });
 }
 </script>
