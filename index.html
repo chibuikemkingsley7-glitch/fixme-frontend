@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FixMe</title>
+</head>
+<body>
+  <h1>Welcome to FixMe</h1>
+
+  <h3>Sign Up</h3>
+  <input id="email" placeholder="Email"><br><br>
+  <input id="password" placeholder="Password" type="password"><br><br>
+  <button onclick="signup()">Sign Up</button>
+
+  <h3>Login</h3>
+  <button onclick="login()">Login</button>
+
+  <h3>Choose Service</h3>
+  <button onclick="getWorkers('Hairdresser')">Hairdresser</button>
+  <button onclick="getWorkers('Barber')">Barber</button>
+
+  <div id="workers"></div>
+
+<script>
+const API = "https://fixme-backend-1.onrender.com";
+
+function signup(){
+  fetch(API+"/signup",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      email:document.getElementById("email").value,
+      password:document.getElementById("password").value
+    })
+  }).then(res=>res.json()).then(data=>alert(data.message));
+}
+
+function login(){
+  fetch(API+"/login",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      email:document.getElementById("email").value,
+      password:document.getElementById("password").value
+    })
+  }).then(res=>res.json()).then(data=>alert(data.message));
+}
+
+function getWorkers(type){
+  fetch(API+"/workers?type="+type)
+  .then(res=>res.json())
+  .then(data=>{
+    let html="";
+    data.forEach(w=>{
+      html+=`<p>${w.name} - ${w.exp} - ₦${w.price}
+      <button onclick="book(${w.id},${w.price})">Book</button></p>`;
+    });
+    document.getElementById("workers").innerHTML=html;
+  });
+}
+
+function book(id,price){
+  fetch(API+"/book",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      workerId:id,
+      location:"User location",
+      price:price
+    })
+  }).then(res=>res.json()).then(data=>alert(data.message));
+}
+</script>
+
+</body>
+</html>
