@@ -37,18 +37,39 @@
 
 <h1>FixMe 💈</h1>
 
-<div class="box" id="serviceBox" style="display:none;">
-  <h3>Create Account</h3>
-  <input id="email" placeholder="Email"><br>
-  <input id="password" type="password" placeholder="Password"><br>
-  <button onclick="signup()">Sign Up</button>
-</div>
+<div id="authSection">
 
-<div class="box">
-  <h3>Login</h3>
-  <button onclick="login()">Login</button>
-</div>
+  <div class="box">
+    <h3>Create Account</h3>
+    <input id="email" placeholder="Email"><br>
+    <input id="password" type="password" placeholder="Password"><br>
+    <button onclick="signup()">Sign Up</button>
+  </div>
 
+  <div class="box">
+    <h3>Login</h3>
+    <button onclick="login()">Login</button>
+  </div>
+
+</div>
+<div id="dashboard" style="display:none;">
+
+  <div class="box">
+    <h2>Welcome to FixMe 🎉</h2>
+  </div>
+
+  <div class="box">
+    <h3>Choose Service</h3>
+    <button onclick="getWorkers('Hairdresser')">Hairdresser</button>
+    <button onclick="getWorkers('Barber')">Barber</button>
+  </div>
+
+  <div class="box">
+    <h3>Available Workers</h3>
+    <div id="workers"></div>
+  </div>
+
+</div>
 <div class="box">
   <h3>Choose Service</h3>
   <button onclick="getWorkers('Hairdresser')">Hairdresser</button>
@@ -75,7 +96,10 @@ function signup(){
   .then(res=>res.json())
   .then(data=>{
     alert(data.message);
-    document.getElementById("serviceBox").style.display = "block";
+
+    // SWITCH SCREEN
+    document.getElementById("authSection").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
   });
 }
 
@@ -91,10 +115,12 @@ function login(){
   .then(res=>res.json())
   .then(data=>{
     alert(data.message);
-    document.getElementById("serviceBox").style.display = "block";
+
+    // SWITCH SCREEN
+    document.getElementById("authSection").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
   });
 }
-
 function getWorkers(type){
   fetch(API+"/workers?type="+type)
   .then(res=>res.json())
