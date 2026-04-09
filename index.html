@@ -2,23 +2,63 @@
 <html>
 <head>
   <title>FixMe</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      text-align: center;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      margin: 20px auto;
+      width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 5px;
+    }
+    button {
+      padding: 10px;
+      margin: 5px;
+      width: 95%;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Welcome to FixMe</h1>
 
-  <h3>Sign Up</h3>
-  <input id="email" placeholder="Email"><br><br>
-  <input id="password" placeholder="Password" type="password"><br><br>
+<h1>FixMe 💈</h1>
+
+<div class="box">
+  <h3>Create Account</h3>
+  <input id="email" placeholder="Email"><br>
+  <input id="password" type="password" placeholder="Password"><br>
   <button onclick="signup()">Sign Up</button>
+</div>
 
+<div class="box">
   <h3>Login</h3>
   <button onclick="login()">Login</button>
+</div>
 
+<div class="box">
   <h3>Choose Service</h3>
   <button onclick="getWorkers('Hairdresser')">Hairdresser</button>
   <button onclick="getWorkers('Barber')">Barber</button>
+</div>
 
+<div class="box">
+  <h3>Available Workers</h3>
   <div id="workers"></div>
+</div>
 
 <script>
 const API = "https://fixme-backend-1.onrender.com";
@@ -31,7 +71,11 @@ function signup(){
       email:document.getElementById("email").value,
       password:document.getElementById("password").value
     })
-  }).then(res=>res.json()).then(data=>alert(data.message));
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    alert(data.message);
+  });
 }
 
 function login(){
@@ -42,7 +86,11 @@ function login(){
       email:document.getElementById("email").value,
       password:document.getElementById("password").value
     })
-  }).then(res=>res.json()).then(data=>alert(data.message));
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    alert(data.message);
+  });
 }
 
 function getWorkers(type){
@@ -51,8 +99,8 @@ function getWorkers(type){
   .then(data=>{
     let html="";
     data.forEach(w=>{
-      html+=`<p>${w.name} - ${w.exp} - ₦${w.price}
-      <button onclick="book(${w.id},${w.price})">Book</button></p>`;
+      html+=`<p><b>${w.name}</b><br>${w.exp}<br>₦${w.price}
+      <br><button onclick="book(${w.id},${w.price})">Book</button></p>`;
     });
     document.getElementById("workers").innerHTML=html;
   });
@@ -67,7 +115,11 @@ function book(id,price){
       location:"User location",
       price:price
     })
-  }).then(res=>res.json()).then(data=>alert(data.message));
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    alert(data.message);
+  });
 }
 </script>
 
