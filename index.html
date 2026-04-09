@@ -67,6 +67,10 @@
   <div class="box">
     <h3>Available Workers</h3>
     <div id="workers"></div>
+    <div class="box" id="bookingBox" style="display:none;">
+  <h3>Booking Confirmed ✅</h3>
+  <p id="bookingDetails"></p>
+</div>
   </div>
 
 </div>
@@ -134,19 +138,26 @@ function getWorkers(type){
   });
 }
 
-function book(id,price){
+function book(id, price){
   fetch(API+"/book",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({
       workerId:id,
-      location:"User location",
+      location:"Your location",
       price:price
     })
   })
   .then(res=>res.json())
   .then(data=>{
-    alert(data.message);
+    
+    // Show booking box
+    document.getElementById("bookingBox").style.display = "block";
+
+    // Show details
+    document.getElementById("bookingDetails").innerHTML =
+      "Your booking is confirmed.<br>Amount: ₦" + price;
+
   });
 }
 </script>
