@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Service</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial;
+      background: #f5f5f5;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Select Service</h1>
+
+<div class="card" onclick="choose('barber')">💈 Barber</div>
+<div class="card" onclick="choose('hairdresser')">💇‍♀️ Hairdresser</div>
+
+<script>
+function choose(service){
+  localStorage.setItem("service", service);
+  window.location.href = "index.html"; // your experience page
+}
+</script>
+
+</body>
+</html>
