@@ -114,13 +114,27 @@ function signup(){
 }
 
 function login(){
-  fetch(API+"/login",{method:"POST", headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({email:document.getElementById("email").value,password:document.getElementById("password").value})})
-  .then(res=>res.json()).then(data=>{
-    alert(data.message);
-    document.getElementById("authSection").style.display="none";
-    document.getElementById("dashboard").style.display="block";
+  async function login() {
+  document.getElementById("message").innerText = "Logging in... ⏳ please wait";
+
+  const res = await fetch("https://fixme-backend-4.onrender.com/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value
+    })
   });
+
+  const data = await res.json();
+
+  document.getElementById("message").innerText = data.message;
+
+  if(data.message === "Logged in"){
+    window.location.href = "home.html";
+  }
 }
 
 // Choose service
