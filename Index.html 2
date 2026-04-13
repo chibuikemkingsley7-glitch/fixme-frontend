@@ -46,6 +46,8 @@
 
 <script>
 function book(price){
+  const service = localStorage.getItem("service");
+
   fetch("https://fixme-backend-4.onrender.com/book", {
     method: "POST",
     headers: {
@@ -53,6 +55,7 @@ function book(price){
     },
     body: JSON.stringify({
       agentId: "test",
+      service: service,
       price: price,
       location: "Lagos"
     })
