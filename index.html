@@ -3,107 +3,115 @@
 <head>
   <title>FixMe 💈</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    body {font-family:'Segoe UI', Tahoma, sans-serif; margin:0; padding:0; background:#f0f2f5;}
-    header {background:#000; color:white; padding:15px; text-align:center; font-size:24px;}
+    body {font-family:'Segoe UI', Tahoma, sans-serif; margin:0; background:#f0f2f5;}
+    header {background:#000; color:white; padding:15px; text-align:center; font-size:22px;}
     .container {width:90%; max-width:450px; margin:20px auto;}
-    .card {background:white; padding:20px; margin:10px 0; border-radius:10px; box-shadow:0 3px 8px rgba(0,0,0,0.1);}
-    input, select {width:90%; padding:10px; margin:5px 0; border-radius:5px; border:1px solid #ccc;}
-    button {padding:12px; margin:8px 0; background:#000; color:white; border:none; border-radius:8px; width:100%;}
-    button:hover {background:#333;}
+    .card {background:white; padding:15px; margin:10px 0; border-radius:10px;}
+    input, select {width:100%; padding:10px; margin:5px 0;}
+    button {width:100%; padding:12px; margin-top:8px; background:black; color:white; border:none; border-radius:6px;}
+    img {width:70px; margin:5px; border-radius:10px;}
     .star {color:purple;}
   </style>
 </head>
+
 <body>
 
 <header>FixMe 💈</header>
 
-<!-- Landing -->
+<!-- ROLE -->
 <div class="container" id="roleSelect">
   <div class="card">
-    <h2>Welcome</h2>
+    <h3>Welcome</h3>
     <button onclick="selectRole('customer')">Customer</button>
-    <button onclick="selectRole('agent')">Register Agent</button>
+    <button onclick="selectRole('agent')">Become Agent</button>
   </div>
 </div>
 
-<!-- Auth -->
+<!-- AUTH -->
 <div class="container" id="authSection" style="display:none;">
   <div class="card">
-    <input id="email" placeholder="Email"><br>
-    <input id="password" type="password" placeholder="Password"><br>
-    <button onclick="signup()">Sign Up</button>
+    <h3>Signup</h3>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="signup()">Signup</button>
+  </div>
+
+  <div class="card">
+    <h3>Login</h3>
     <button onclick="login()">Login</button>
     <p id="message"></p>
   </div>
 </div>
 
-<!-- Dashboard -->
+<!-- DASHBOARD -->
 <div class="container" id="dashboard" style="display:none;">
   <div class="card">
     <h3>Select Service</h3>
-    <button onclick="chooseService('hairdresser')">Hairdresser</button>
     <button onclick="chooseService('barber')">Barber</button>
+    <button onclick="chooseService('hairdresser')">Hairdresser</button>
   </div>
 </div>
 
-<!-- Agents -->
+<!-- AGENTS -->
 <div class="container" id="workersSection" style="display:none;">
-  <p id="loading"></p>
   <div id="workers"></div>
 </div>
 
-<!-- Experience -->
+<!-- EXPERIENCE -->
 <div class="container" id="experienceSection" style="display:none;">
   <div class="card">
-    <h3>Select Experience</h3>
-    <button onclick="finalBook(4000)">1–3 yrs → ₦4,000</button>
-    <button onclick="finalBook(8000)">3–6 yrs → ₦8,000</button>
-    <button onclick="finalBook(15000)">6–10 yrs → ₦15,000</button>
-    <button onclick="finalBook(25000)">10+ yrs → ₦25,000</button>
+    <h3>Select Price</h3>
+    <button onclick="finalBook(4000)">₦4,000</button>
+    <button onclick="finalBook(8000)">₦8,000</button>
+    <button onclick="finalBook(15000)">₦15,000</button>
+    <button onclick="finalBook(25000)">₦25,000</button>
   </div>
 </div>
 
-<!-- Booking -->
+<!-- BOOKING -->
 <div class="container" id="bookingBox" style="display:none;">
   <div class="card">
-    <h3>Booking Confirmed ✅</h3>
+    <h3>Success ✅</h3>
     <p id="bookingDetails"></p>
   </div>
 </div>
 
-<!-- Agent -->
+<!-- AGENT REGISTER -->
 <div class="container" id="agentSection" style="display:none;">
   <div class="card">
-    <input id="agentName" placeholder="Name"><br>
-    <input id="agentEmail" placeholder="Email"><br>
-    <input id="agentPassword" type="password"><br>
-    <input id="agentAddress" placeholder="Address"><br>
+    <h3>Register Agent</h3>
+
+    <input id="agentName" placeholder="Name">
+    <input id="agentEmail" placeholder="Email">
+    <input id="agentPassword" type="password" placeholder="Password">
+    <input id="agentAddress" placeholder="Address">
 
     <select id="serviceType">
-      <option value="">Service</option>
-      <option value="hairdresser">Hairdresser</option>
+      <option value="">Select</option>
       <option value="barber">Barber</option>
-    </select><br>
+      <option value="hairdresser">Hairdresser</option>
+    </select>
 
-    <input id="experienceYears" type="number" placeholder="Years"><br>
+    <input id="experienceYears" placeholder="Experience">
 
-    <input type="file" id="profilePic"><br>
-    <input type="file" id="kitPic"><br>
+    <input type="file" id="profilePic">
+    <input type="file" id="kitPic">
 
     <label>Purple Star</label>
-    <input type="checkbox" id="purpleStar"><br>
+    <input type="checkbox" id="purpleStar">
 
     <button onclick="registerAgent()">Submit</button>
   </div>
 </div>
 
 <script>
-const API = "https://fixme-backend-3.onrender.com"; // ✅ correct one
 
+const API = "https://fixme-backend-3.onrender.com";
 let selectedAgentId = "";
 
-// Role
+// ROLE
 function selectRole(role){
   roleSelect.style.display="none";
   if(role==="customer"){
@@ -113,82 +121,92 @@ function selectRole(role){
   }
 }
 
-// Signup
+// SIGNUP
 function signup(){
   fetch(API+"/signup",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({email:email.value,password:password.value})
+    body:JSON.stringify({
+      email:email.value,
+      password:password.value
+    })
   })
   .then(res=>res.json())
-  .then(d=>{
-    alert(d.message);
+  .then(data=>{
+    alert(data.message);
     authSection.style.display="none";
     dashboard.style.display="block";
   });
 }
 
-// Login
+// LOGIN
 async function login(){
   message.innerText="Logging in...";
 
-  try{
-    const res=await fetch(API+"/login",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({email:email.value,password:password.value})
-    });
+  const res = await fetch(API+"/login",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      email:email.value,
+      password:password.value
+    })
+  });
 
-    const d=await res.json();
-    message.innerText=d.message;
+  const data = await res.json();
+  message.innerText=data.message;
 
-    if(d.message==="Logged in"){
-      authSection.style.display="none";
-      dashboard.style.display="block";
-    }
-  }catch{
-    message.innerText="Error ❌";
+  if(data.message==="Logged in"){
+    authSection.style.display="none";
+    dashboard.style.display="block";
   }
 }
 
-// Fetch agents
+// 🔥 CHOOSE SERVICE (THIS IS THE FIXED PART)
 function chooseService(service){
   dashboard.style.display="none";
   workersSection.style.display="block";
-  loading.innerText="Loading...";
 
   fetch(API+"/agents?service="+service)
   .then(res=>res.json())
   .then(data=>{
-    loading.innerText="";
+    let html="";
 
-    if(data.length===0){
-      workers.innerHTML="<p>No agents found ❌</p>";
-      return;
+    if(data.length === 0){
+      html = "<p>No agents available</p>";
     }
 
-    let html="";
     data.forEach(agent=>{
-      html+=`
+      html += `
       <div class="card">
-        <h3>${agent.name}</h3>
-        <p>${agent.experience} years</p>
+        <h3>
+          ${agent.name}
+          ${agent.purpleStar ? "<span class='star'>⭐</span>" : ""}
+        </h3>
+
+        <p>${agent.experience} years experience</p>
+
+        ${agent.profilePicUrl ? `<img src="${agent.profilePicUrl}">` : ""}
+        ${agent.kitPicUrl ? `<img src="${agent.kitPicUrl}">` : ""}
+
         <button onclick="selectAgent('${agent._id}')">Book</button>
       </div>`;
     });
 
-    workers.innerHTML=html;
+    workers.innerHTML = html;
+  })
+  .catch(()=>{
+    workers.innerHTML = "Error loading agents ❌";
   });
 }
 
-// Select agent
+// SELECT AGENT
 function selectAgent(id){
-  selectedAgentId=id;
+  selectedAgentId = id;
   workersSection.style.display="none";
   experienceSection.style.display="block";
 }
 
-// Book
+// BOOK
 function finalBook(price){
   fetch(API+"/book",{
     method:"POST",
@@ -203,29 +221,31 @@ function finalBook(price){
   .then(()=>{
     experienceSection.style.display="none";
     bookingBox.style.display="block";
-    bookingDetails.innerHTML="Price: ₦"+price;
+    bookingDetails.innerHTML="Booked ✅ ₦"+price;
   });
 }
 
-// Register agent
+// REGISTER AGENT
 function registerAgent(){
-  const fd=new FormData();
-  fd.append("name",agentName.value);
-  fd.append("email",agentEmail.value);
-  fd.append("password",agentPassword.value);
-  fd.append("address",agentAddress.value);
-  fd.append("service",serviceType.value);
-  fd.append("experience",experienceYears.value);
-  fd.append("profilePic",profilePic.files[0]);
-  fd.append("kitPic",kitPic.files[0]);
-  fd.append("purpleStar",purpleStar.checked);
+  const formData = new FormData();
 
-  fetch(API+"/registerAgent",{method:"POST",body:fd})
+  formData.append("name",agentName.value);
+  formData.append("email",agentEmail.value);
+  formData.append("password",agentPassword.value);
+  formData.append("address",agentAddress.value);
+  formData.append("service",serviceType.value);
+  formData.append("experience",experienceYears.value);
+  formData.append("profilePic",profilePic.files[0]);
+  formData.append("kitPic",kitPic.files[0]);
+  formData.append("purpleStar",purpleStar.checked);
+
+  fetch(API+"/registerAgent",{method:"POST",body:formData})
   .then(res=>res.json())
   .then(()=>{
     alert("Submitted ✅");
   });
 }
+
 </script>
 
 </body>
